@@ -7,8 +7,7 @@ from PySide6.QtWidgets import (QTreeWidget, QTreeWidgetItem, QApplication,
 from PySide6.QtCore import Qt, Slot, QDir
 from PySide6.QtGui import QIcon, QFont, QColor # Added QColor for error text
 
-# Import ignore patterns and helpers from the same package
-from .file_processor import DEFAULT_IGNORE_PATTERNS, should_ignore
+from llm_context_builder.file_processor import DEFAULT_IGNORE_PATTERNS, should_ignore
 
 # --- Helper Function to get resource path ---
 def resource_path(relative_path):

@@ -1,6 +1,7 @@
 # llm_context_builder/file_processor.py
 
 import os
+import sys # Import sys for path manipulation
 import logging
 
 # Configure basic logging

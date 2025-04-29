@@ -10,9 +10,10 @@ from PySide6.QtWidgets import (
 from PySide6.QtGui import QAction, QIcon, QKeySequence, QDesktopServices, QClipboard
 from PySide6.QtCore import Qt, Slot, QSettings, QUrl
 
-# Import custom widgets and functions
-from .file_tree_widget import FileTreeWidget # Corrected import name
-from .file_processor import generate_context_file
+# Changed from relative to absolute package imports
+from llm_context_builder.file_tree_widget import FileTreeWidget
+from llm_context_builder.file_processor import generate_context_file
+
 
 # --- Application Settings ---
 ORG_NAME = "MyCompany" # Or your name/handle
