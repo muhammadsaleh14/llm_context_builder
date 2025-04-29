@@ -175,19 +175,33 @@ class FileTreeWidget(QTreeWidget):
     @Slot(QTreeWidgetItem, int)
     def _handle_item_changed(self, item, column):
         """Handles changes to item check states, implementing hierarchy."""
+        # Check if the change is relevant (column 0) and not programmatically triggered within this handler
         if column == 0 and not self._is_changing_programmatically:
-            self._is_changing_programmatically = True
+            self._is_changing_programmatically = True  # Prevent infinite recursion
             try:
-                check_state = item.checkState(0)
+                current_check_state = item.checkState(0) # Get the state *after* the change
                 is_dir = item.data(1, Qt.ItemDataRole.UserRole)
 
-                if is_dir:
-                    self._set_check_state_recursive_children_only(item, check_state)
+                # --- Propagate check state downwards ONLY if it's a directory
+                # --- AND the state change was to fully Checked or Unchecked.
+                # --- Do NOT propagate if the state became PartiallyChecked, as this
+                # --- usually happens because a child changed, not a direct user click
+                # --- on the directory checkbox with the intent to check/uncheck all.
+                if is_dir and current_check_state != Qt.CheckState.PartiallyChecked:
+                    # User explicitly checked or unchecked the directory item itself.
+                    # Apply this state to all checkable children recursively.
+                    self._set_check_state_recursive_children_only(item, current_check_state)
 
+                # --- Always update the parent's state based on children states ---
+                # This needs to happen regardless of whether the current item is a file or directory,
+                # or whether downward propagation occurred.
                 self._update_parent_state(item.parent())
 
             finally:
-                self._is_changing_programmatically = False
+                self._is_changing_programmatically = False # Release the lock
+
+    # ... (rest of the class, including _set_check_state_recursive_children_only and _update_parent_state) ...
+
 
 
     def _set_check_state_recursive(self, parent_item, state):
